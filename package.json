@@ -1,0 +1,16 @@
+{
+  "name": "p-iter",
+  "version": "0.0.0",
+  "author": "ninevra",
+  "license": "ISC",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "xo && c8 ava"
+  },
+  "devDependencies": {
+    "ava": "^4.0.0-alpha.1",
+    "c8": "^7.7.0",
+    "xo": "^0.38.2"
+  }
+}
