@@ -39,3 +39,19 @@ export async function* pIter(promises) {
     }
   }
 }
+
+function* map(iterable, fn) {
+  for (const item of iterable) {
+    yield fn(item);
+  }
+}
+
+export async function* pIterSettled(promises) {
+  yield* pIter(
+    map(promises, (promise) =>
+      promise
+        .then((value) => ({ status: 'fulfilled', value }))
+        .catch((error) => ({ status: 'rejected', reason: error }))
+    )
+  );
+}

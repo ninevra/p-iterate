@@ -1,5 +1,5 @@
 import test from 'ava';
-import { pIter } from './index.js';
+import { pIter, pIterSettled } from './index.js';
 
 function* range(start, stop) {
   while (start < stop) {
@@ -83,4 +83,31 @@ test('pIter() rejects', async (t) => {
   } catch (error) {
     t.is(error, 2);
   }
+});
+
+async function passes(t, work) {
+  const attempt = await t.try(work);
+  attempt.discard();
+  return attempt.passed;
+}
+
+test('pIterSettled() iterates over the settled states of the input', async (t) => {
+  // eslint-disable-next-line prefer-promise-reject-errors
+  const input = [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)];
+  const expected = await Promise.allSettled(input);
+  const received = [];
+  for await (const item of pIterSettled(input)) {
+    received.push(item);
+    t.true(
+      (
+        await Promise.all(
+          expected.map((expectation) =>
+            passes(t, (t) => t.like(item, expectation))
+          )
+        )
+      ).some((v) => v)
+    );
+  }
+
+  t.is(received.length, input.length);
 });
