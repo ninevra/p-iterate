@@ -1,0 +1,23 @@
+{
+  "files": [
+    "index.ts"
+  ],
+  "compilerOptions": {
+    "outDir": "dist",
+    "lib": ["es2020"],
+    "module": "ESNext",
+    "target": "ESNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "newLine": "LF",
+    "declaration": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+		"noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "useDefineForClassFields": true
+  }
+}
