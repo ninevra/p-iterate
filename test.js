@@ -94,7 +94,9 @@ async function passes(t, work) {
 test('pIterSettled() iterates over the settled states of the input', async (t) => {
   // eslint-disable-next-line prefer-promise-reject-errors
   const input = [Promise.resolve(1), Promise.reject(2), Promise.resolve(3)];
-  const expected = await Promise.allSettled(input);
+  const expected = (
+    await Promise.allSettled(input)
+  ).map((expectation, index) => ({ index, ...expectation }));
   const received = [];
   for await (const item of pIterSettled(input)) {
     received.push(item);
@@ -102,7 +104,7 @@ test('pIterSettled() iterates over the settled states of the input', async (t) =
       (
         await Promise.all(
           expected.map((expectation) =>
-            passes(t, (t) => t.like(item, expectation))
+            passes(t, (t) => t.deepEqual(item, expectation))
           )
         )
       ).some((v) => v)

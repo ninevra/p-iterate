@@ -56,7 +56,12 @@ async function settling(promise) {
 }
 
 export async function* pIterSettled(promises) {
-  yield* pIter(map(promises, settling));
+  yield* pIter(
+    map(promises, async (promise, index) => ({
+      index,
+      ...(await settling(promise)),
+    }))
+  );
 }
 
 export async function* pIterEnumerated(promises) {
