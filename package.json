@@ -10,7 +10,7 @@
     "test": "xo && c8 ava"
   },
   "devDependencies": {
-    "ava": "^4.0.0-alpha.1",
+    "ava": "avajs/ava#eef1a55584307533b6b82b17e8edde47b5eb9fb3",
     "c8": "^7.7.0",
     "xo": "^0.38.2"
   },
