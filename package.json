@@ -4,6 +4,7 @@
   "author": "ninevra",
   "license": "ISC",
   "description": "",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "test": "xo && c8 ava"
@@ -12,5 +13,14 @@
     "ava": "^4.0.0-alpha.1",
     "c8": "^7.7.0",
     "xo": "^0.38.2"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "bracketSpacing": true
+  },
+  "xo": {
+    "prettier": true,
+    "space": true
   }
 }
