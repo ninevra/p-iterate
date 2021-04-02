@@ -1,5 +1,5 @@
 import test from 'ava';
-import { pIter, pIterSettled, pIterEnumerated } from './index.js';
+import { pIter, pIterSettled, pIterEnumerated } from 'p-iter';
 
 function* range(start, stop) {
   while (start < stop) {
