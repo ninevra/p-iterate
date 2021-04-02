@@ -47,14 +47,16 @@ function* map(iterable, fn) {
   }
 }
 
+async function settling(promise) {
+  try {
+    return { status: 'fulfilled', value: await promise };
+  } catch (error) {
+    return { status: 'rejected', reason: error };
+  }
+}
+
 export async function* pIterSettled(promises) {
-  yield* pIter(
-    map(promises, (promise) =>
-      promise
-        .then((value) => ({ status: 'fulfilled', value }))
-        .catch((error) => ({ status: 'rejected', reason: error }))
-    )
-  );
+  yield* pIter(map(promises, settling));
 }
 
 export async function* pIterEnumerated(promises) {
