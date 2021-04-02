@@ -41,8 +41,9 @@ export async function* pIter(promises) {
 }
 
 function* map(iterable, fn) {
+  let index = 0;
   for (const item of iterable) {
-    yield fn(item);
+    yield fn(item, index++);
   }
 }
 
@@ -53,5 +54,11 @@ export async function* pIterSettled(promises) {
         .then((value) => ({ status: 'fulfilled', value }))
         .catch((error) => ({ status: 'rejected', reason: error }))
     )
+  );
+}
+
+export async function* pIterEnumerated(promises) {
+  yield* pIter(
+    map(promises, (promise, index) => promise.then((value) => [index, value]))
   );
 }

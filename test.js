@@ -1,5 +1,5 @@
 import test from 'ava';
-import { pIter, pIterSettled } from './index.js';
+import { pIter, pIterSettled, pIterEnumerated } from './index.js';
 
 function* range(start, stop) {
   while (start < stop) {
@@ -110,4 +110,24 @@ test('pIterSettled() iterates over the settled states of the input', async (t) =
   }
 
   t.is(received.length, input.length);
+});
+
+test('pIterEnumerated() yields values and indices in the order they fulfill', async (t) => {
+  const triggers = [...range(0, 10)].map(() => trigger());
+  const asyncIterable = pIterEnumerated(triggers.map(({ promise }) => promise));
+  const yielded = [];
+  const iteration = (async () => {
+    for await (const value of asyncIterable) {
+      yielded.push(value);
+    }
+  })();
+  const expected = [];
+  for (const value of [5, 4, 7, 2, 1, 9, 8, 0, 3, 6]) {
+    await immediate(); // eslint-disable-line no-await-in-loop
+    triggers[value].resolve(`${value}`);
+    expected.push([value, `${value}`]);
+  }
+
+  await iteration;
+  t.deepEqual(yielded, expected);
 });
