@@ -4,6 +4,7 @@
   ],
   "compilerOptions": {
     "outDir": "dist",
+    "sourceMap": true,
     "lib": ["es2020"],
     "module": "ESNext",
     "target": "ESNext",

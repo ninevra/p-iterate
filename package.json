@@ -32,5 +32,11 @@
     "files": [
       "dist/test.js"
     ]
+  },
+  "c8": {
+    "exclude": [
+      "test.ts"
+    ],
+    "excludeAfterRemap": true
   }
 }
