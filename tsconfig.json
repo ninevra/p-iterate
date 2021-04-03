@@ -1,12 +1,13 @@
 {
-  "files": [
-    "index.ts"
+  "include": [
+    "*.ts"
   ],
   "compilerOptions": {
     "outDir": "dist",
     "lib": ["es2020"],
     "module": "ESNext",
     "target": "ESNext",
+    "moduleResolution": "node",
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,

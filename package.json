@@ -27,5 +27,10 @@
   "xo": {
     "prettier": true,
     "space": true
+  },
+  "ava": {
+    "files": [
+      "dist/test.js"
+    ]
   }
 }

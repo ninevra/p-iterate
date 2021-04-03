@@ -1,30 +1,39 @@
-import test from 'ava';
-import { pIter, pIterSettled, pIterEnumerated } from 'p-iter';
+import test, { ExecutionContext, EitherMacro } from 'ava';
+import { pIter, pIterSettled, pIterEnumerated } from './index.js';
 
-function* range(start, stop) {
+function* range(start: number, stop: number): Generator<number> {
   while (start < stop) {
     yield start++;
   }
 }
 
-function trigger() {
-  let ops;
-  const promise = new Promise((resolve, reject) => {
+type PromiseSettlers<T> = {
+  resolve: (value: T) => void;
+  reject: (reason: unknown) => void;
+};
+
+type Trigger<T> = PromiseSettlers<T> & {
+  promise: Promise<T>;
+};
+
+function trigger<T>(): Trigger<T> {
+  let ops: PromiseSettlers<T>;
+  const promise = new Promise<T>((resolve, reject) => {
     ops = { resolve, reject };
   });
-  return { promise, ...ops };
+  return { promise, ...ops! };
 }
 
-function immediate() {
+async function immediate(): Promise<void> {
   return new Promise((resolve) => {
     setImmediate(resolve);
   });
 }
 
 test('pIter() yields values in the order they fulfill', async (t) => {
-  const triggers = [...range(0, 10)].map(() => trigger());
-  const asyncIterable = pIter(triggers.map(({ promise }) => promise));
-  const yielded = [];
+  const triggers = [...range(0, 10)].map(() => trigger<number>());
+  const asyncIterable = pIter(triggers.map(async ({ promise }) => promise));
+  const yielded: number[] = [];
   const iteration = (async () => {
     for await (const value of asyncIterable) {
       yielded.push(value);
@@ -33,7 +42,7 @@ test('pIter() yields values in the order they fulfill', async (t) => {
   const expected = [5, 4, 7, 2, 1, 9, 8, 0, 3, 6];
   for (const value of expected) {
     await immediate(); // eslint-disable-line no-await-in-loop
-    triggers[value].resolve(value);
+    triggers[value]!.resolve(value);
   }
 
   await iteration;
@@ -41,16 +50,20 @@ test('pIter() yields values in the order they fulfill', async (t) => {
 });
 
 test('pIter() rejects with the reason of the first promise to reject', async (t) => {
-  const triggers = [trigger(), trigger(), trigger()];
-  const asyncIterable = pIter(triggers.map(({ promise }) => promise));
-  const yielded = [];
-  let rejection;
+  const triggers = [
+    trigger<number>(),
+    trigger<number>(),
+    trigger<number>(),
+  ] as const;
+  const asyncIterable = pIter(triggers.map(async ({ promise }) => promise));
+  const yielded: number[] = [];
+  let rejection: unknown;
   const iteration = (async () => {
     try {
       for await (const value of asyncIterable) {
         yielded.push(value);
       }
-    } catch (error) {
+    } catch (error: unknown) {
       rejection = error;
     }
   })();
@@ -66,8 +79,11 @@ test('pIter() rejects with the reason of the first promise to reject', async (t)
   t.deepEqual(await asyncIterable.next(), { done: true, value: undefined });
 });
 
-async function consumeAsync(asyncIterable) {
-  // eslint-disable-next-line no-unused-vars, no-empty
+async function consumeAsync(
+  asyncIterable: AsyncIterable<unknown>
+): Promise<void> {
+  // @ts-expect-error
+  // eslint-disable-next-line no-empty
   for await (const value of asyncIterable) {
   }
 }
@@ -80,12 +96,15 @@ test('pIter() rejects', async (t) => {
     );
 
     t.fail();
-  } catch (error) {
+  } catch (error: unknown) {
     t.is(error, 2);
   }
 });
 
-async function passes(t, work) {
+async function passes<Context>(
+  t: ExecutionContext<Context>,
+  work: EitherMacro<[], Context> // eslint-disable-line @typescript-eslint/ban-types
+): Promise<boolean> {
   const attempt = await t.try(work);
   attempt.discard();
   return attempt.passed;
@@ -103,7 +122,7 @@ test('pIterSettled() iterates over the settled states of the input', async (t) =
     t.true(
       (
         await Promise.all(
-          expected.map((expectation) =>
+          expected.map(async (expectation) =>
             passes(t, (t) => t.deepEqual(item, expectation))
           )
         )
@@ -115,18 +134,20 @@ test('pIterSettled() iterates over the settled states of the input', async (t) =
 });
 
 test('pIterEnumerated() yields values and indices in the order they fulfill', async (t) => {
-  const triggers = [...range(0, 10)].map(() => trigger());
-  const asyncIterable = pIterEnumerated(triggers.map(({ promise }) => promise));
-  const yielded = [];
+  const triggers = [...range(0, 10)].map(() => trigger<string>());
+  const asyncIterable = pIterEnumerated(
+    triggers.map(async ({ promise }) => promise)
+  );
+  const yielded: Array<[number, string]> = [];
   const iteration = (async () => {
     for await (const value of asyncIterable) {
       yielded.push(value);
     }
   })();
-  const expected = [];
+  const expected: Array<[number, string]> = [];
   for (const value of [5, 4, 7, 2, 1, 9, 8, 0, 3, 6]) {
     await immediate(); // eslint-disable-line no-await-in-loop
-    triggers[value].resolve(`${value}`);
+    triggers[value]!.resolve(`${value}`);
     expected.push([value, `${value}`]);
   }
 
