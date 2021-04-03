@@ -11,7 +11,8 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "test": "xo && c8 ava"
+    "build": "tsc",
+    "test": "xo && npm run build && c8 ava"
   },
   "devDependencies": {
     "ava": "avajs/ava#eef1a55584307533b6b82b17e8edde47b5eb9fb3",
