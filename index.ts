@@ -9,7 +9,7 @@ type State<T> =
 
 export async function* pIter<T>(
   promises: Iterable<Promise<T>>
-): AsyncGenerator<T> {
+): AsyncGenerator<T, void, undefined> {
   // Typescript incorrectly narrows `state` on the assumption that it doesn't
   // leak, so we manually widen it to its full type range.
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -77,7 +77,11 @@ async function settling<T>(
 
 export async function* pIterSettled<T>(
   promises: Iterable<Promise<T>>
-): AsyncGenerator<PromiseSettledResult<T> & { index: number }> {
+): AsyncGenerator<
+  PromiseSettledResult<T> & { index: number },
+  void,
+  undefined
+> {
   yield* pIter(
     map(promises, async (promise, index) => ({
       index,
@@ -88,7 +92,7 @@ export async function* pIterSettled<T>(
 
 export async function* pIterEnumerated<T>(
   promises: Iterable<Promise<T>>
-): AsyncGenerator<[number, T]> {
+): AsyncGenerator<[number, T], void, undefined> {
   yield* pIter(
     map(promises, async (promise, index) =>
       promise.then((value) => [index, value])
