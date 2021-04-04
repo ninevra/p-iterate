@@ -37,7 +37,8 @@
       "dist/test.js",
       "test.smoke.cjs",
       "test.smoke.js"
-    ]
+    ],
+    "snapshotDir": "snapshots"
   },
   "c8": {
     "exclude": [
