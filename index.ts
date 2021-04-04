@@ -8,7 +8,7 @@ type State<T> =
   | { label: 'rejected'; reason: unknown };
 
 export async function* pIter<T>(
-  promises: Iterable<Promise<T>>
+  promises: Iterable<PromiseLike<T>>
 ): AsyncGenerator<T, void, undefined> {
   // Typescript incorrectly narrows `state` on the assumption that it doesn't
   // leak, so we manually widen it to its full type range.
@@ -18,7 +18,7 @@ export async function* pIter<T>(
   for (const promise of promises) {
     count++;
     /* eslint-disable @typescript-eslint/no-loop-func */
-    promise
+    Promise.resolve(promise)
       .then((value) => {
         if (state.label === 'yielded') {
           state.resolve(value);
@@ -76,7 +76,7 @@ async function settling<T>(
 }
 
 export async function* pIterSettled<T>(
-  promises: Iterable<Promise<T>>
+  promises: Iterable<PromiseLike<T>>
 ): AsyncGenerator<
   PromiseSettledResult<T> & { index: number },
   void,
@@ -85,13 +85,13 @@ export async function* pIterSettled<T>(
   yield* pIter(
     map(promises, async (promise, index) => ({
       index,
-      ...(await settling(promise)),
+      ...(await settling(Promise.resolve(promise))),
     }))
   );
 }
 
 export async function* pIterEnumerated<T>(
-  promises: Iterable<Promise<T>>
+  promises: Iterable<PromiseLike<T>>
 ): AsyncGenerator<[number, T], void, undefined> {
   yield* pIter(
     map(promises, async (promise, index) =>
