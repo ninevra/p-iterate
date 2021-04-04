@@ -6,17 +6,20 @@
   "description": "",
   "type": "module",
   "exports": {
-    "import": "./dist/index.js"
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && rollup --input dist/index.js --file dist/index.cjs --format cjs --sourcemap && sorcery --input dist/index.cjs",
     "test": "xo && npm run build && c8 ava"
   },
   "devDependencies": {
     "ava": "avajs/ava#eef1a55584307533b6b82b17e8edde47b5eb9fb3",
     "c8": "^7.7.0",
+    "rollup": "^2.44.0",
+    "sorcery": "^0.10.0",
     "typescript": "^4.2.3",
     "xo": "^0.38.2"
   },
@@ -31,12 +34,16 @@
   },
   "ava": {
     "files": [
-      "dist/test.js"
+      "dist/test.js",
+      "test.smoke.cjs",
+      "test.smoke.js"
     ]
   },
   "c8": {
     "exclude": [
-      "test.ts"
+      "test.ts",
+      "test.smoke.cjs",
+      "test.smoke.js"
     ],
     "excludeAfterRemap": true
   }
