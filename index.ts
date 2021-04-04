@@ -1,48 +1,60 @@
+type State<T> =
+  | { label: 'accumulating'; values: T[] }
+  | {
+      label: 'yielded';
+      resolve: (value: T) => void;
+      reject: (reason: unknown) => void;
+    }
+  | { label: 'rejected'; reason: unknown }
+  | { label: 'done' };
+
 export async function* pIter<T>(
   promises: Iterable<Promise<T>>
 ): AsyncGenerator<T> {
-  const values: T[] = [];
-  let outstanding:
-    | { resolve: (value: T) => void; reject: (reason: unknown) => void }
-    | undefined;
+  // Typescript incorrectly assumes that state doesn't leak, so manually widen
+  // it to its full type range
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  let state = { label: 'accumulating', values: [] } as State<T>;
   let count = 0;
-  let rejection: { reason: unknown } | undefined;
   for (const promise of promises) {
     count++;
     /* eslint-disable @typescript-eslint/no-loop-func */
     promise
       .then((value) => {
-        if (outstanding) {
-          outstanding.resolve(value);
-          outstanding = undefined;
-        } else {
-          values.push(value);
+        if (state.label === 'yielded') {
+          state.resolve(value);
+          state = { label: 'accumulating', values: [] };
+        } else if (state.label === 'accumulating') {
+          state.values.push(value);
         }
       })
       .catch((error: unknown) => {
-        if (outstanding) {
-          outstanding.reject(error);
-          outstanding = undefined;
-        } else {
-          rejection = { reason: error };
+        if (state.label === 'yielded') {
+          state.reject(error);
+          state = { label: 'done' };
+        } else if (state.label === 'accumulating') {
+          state = { label: 'rejected', reason: error };
         }
       });
     /* eslint-enable @typescript-eslint/no-loop-func */
   }
 
   while (count > 0) {
-    if (rejection) {
-      throw rejection.reason;
-    }
-
     count--;
-    if (values.length > 0) {
-      yield values.pop()!;
-    } else {
-      // eslint-disable-next-line @typescript-eslint/no-loop-func
-      yield new Promise<T>((resolve, reject) => {
-        outstanding = { resolve, reject };
-      });
+
+    if (state.label === 'rejected') {
+      const { reason } = state;
+      state = { label: 'done' };
+      throw reason;
+    } else if (state.label === 'accumulating') {
+      if (state.values.length > 0) {
+        yield state.values.pop()!;
+      } else {
+        // eslint-disable-next-line @typescript-eslint/no-loop-func
+        yield new Promise<T>((resolve, reject) => {
+          state = { label: 'yielded', resolve, reject };
+        });
+      }
     }
   }
 }
