@@ -5,8 +5,7 @@ type State<T> =
       resolve: (value: T) => void;
       reject: (reason: unknown) => void;
     }
-  | { label: 'rejected'; reason: unknown }
-  | { label: 'done' };
+  | { label: 'rejected'; reason: unknown };
 
 export async function* pIter<T>(
   promises: Iterable<Promise<T>>
@@ -31,7 +30,6 @@ export async function* pIter<T>(
       .catch((error: unknown) => {
         if (state.label === 'yielded') {
           state.reject(error);
-          state = { label: 'done' };
         } else if (state.label === 'accumulating') {
           state = { label: 'rejected', reason: error };
         }
@@ -43,9 +41,7 @@ export async function* pIter<T>(
     count--;
 
     if (state.label === 'rejected') {
-      const { reason } = state;
-      state = { label: 'done' };
-      throw reason;
+      throw state.reason;
     } else if (state.label === 'accumulating') {
       if (state.values.length > 0) {
         yield state.values.pop()!;
