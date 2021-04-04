@@ -10,8 +10,8 @@ type State<T> =
 export async function* pIter<T>(
   promises: Iterable<Promise<T>>
 ): AsyncGenerator<T> {
-  // Typescript incorrectly assumes that state doesn't leak, so manually widen
-  // it to its full type range
+  // Typescript incorrectly narrows `state` on the assumption that it doesn't
+  // leak, so we manually widen it to its full type range.
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   let state = { label: 'accumulating', values: [] } as State<T>;
   let count = 0;
