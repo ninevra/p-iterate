@@ -2,6 +2,11 @@ import { suite, add, cycle, complete } from 'benny';
 import { pIter, pIterEnumerated, pIterSettled } from 'p-iter';
 import frstcmfrstsvd from 'frstcmfrstsvd';
 
+// Disclaimer: These benchmarks are largely irrelevant, since in the intended
+// use case, the input promises' async operations themselves will take the
+// lion's share of the time. The benchmarks are mostly for practice and
+// curiosity.
+
 function* range(start, stop) {
   while (start < stop) {
     yield start++;
