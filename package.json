@@ -1,9 +1,29 @@
 {
   "name": "p-iter",
   "version": "0.0.0",
-  "author": "ninevra",
+  "author": {
+    "name": "ninevra",
+    "email": "ninevra@gmail.com"
+  },
   "license": "ISC",
-  "description": "",
+  "description": "Iterate over promises as they're fulfilled.",
+  "keywords": [
+    "promise",
+    "async",
+    "iterable",
+    "async iterable",
+    "asyncIterable",
+    "generator",
+    "async generator"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ninevra/p-iter.git"
+  },
+  "bugs": {
+    "url" : "https://github.com/ninevra/p-iter"
+  },
+  "homepage": "https://github.com/ninevra/p-iter#readme",
   "type": "module",
   "exports": {
     "import": "./dist/index.js",
@@ -11,6 +31,12 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "module": "./dist/index.js",
+  "files": [
+    "./dist/index.cjs",
+    "./dist/index.js",
+    "./dist/index.d.ts"
+  ],
   "scripts": {
     "build": "tsc && rollup -c",
     "test": "xo && npm run build && c8 ava",
