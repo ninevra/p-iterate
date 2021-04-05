@@ -12,7 +12,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc && rollup --input dist/index.js --file dist/index.cjs --format cjs --sourcemap && sorcery --input dist/index.cjs",
+    "build": "tsc && rollup -c",
     "test": "xo && npm run build && c8 ava",
     "bench": "npm run test && node ./bench.js"
   },
@@ -22,7 +22,7 @@
     "c8": "^7.7.0",
     "frstcmfrstsvd": "^1.0.7",
     "rollup": "^2.44.0",
-    "sorcery": "^0.10.0",
+    "rollup-plugin-sourcemaps": "^0.6.3",
     "typescript": "^4.2.3",
     "xo": "^0.38.2"
   },
