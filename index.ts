@@ -75,14 +75,14 @@ async function settling<T>(
   }
 }
 
-export async function* pIterSettled<T>(
+export function pIterSettled<T>(
   promises: Iterable<PromiseLike<T>>
 ): AsyncGenerator<
   PromiseSettledResult<T> & { index: number },
   void,
   undefined
 > {
-  yield* pIter(
+  return pIter(
     map(promises, async (promise, index) => ({
       index,
       ...(await settling(Promise.resolve(promise))),
@@ -90,12 +90,16 @@ export async function* pIterSettled<T>(
   );
 }
 
-export async function* pIterEnumerated<T>(
+export function pIterEnumerated<T>(
   promises: Iterable<PromiseLike<T>>
 ): AsyncGenerator<[number, T], void, undefined> {
-  yield* pIter(
-    map(promises, async (promise, index) =>
-      promise.then((value) => [index, value])
+  return pIter(
+    map(
+      promises,
+      async (promise, index): Promise<[number, T]> => [
+        index,
+        await Promise.resolve(promise),
+      ]
     )
   );
 }
