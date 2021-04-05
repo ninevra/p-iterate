@@ -21,7 +21,7 @@
     "url": "https://github.com/ninevra/p-iter.git"
   },
   "bugs": {
-    "url" : "https://github.com/ninevra/p-iter"
+    "url": "https://github.com/ninevra/p-iter"
   },
   "homepage": "https://github.com/ninevra/p-iter#readme",
   "type": "module",
@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "ava": "avajs/ava#eef1a55584307533b6b82b17e8edde47b5eb9fb3",
-    "benchmark": "^2.1.4",
+    "benny": "^3.6.15",
     "c8": "^7.7.0",
     "frstcmfrstsvd": "^1.0.7",
     "rollup": "^2.44.0",
