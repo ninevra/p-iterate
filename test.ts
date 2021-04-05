@@ -7,6 +7,12 @@ function* range(start: number, stop: number): Generator<number> {
   }
 }
 
+function* map<T, U>(source: Iterable<T>, fn: (t: T) => U): Generator<U> {
+  for (const item of source) {
+    yield fn(item);
+  }
+}
+
 type PromiseSettlers<T> = {
   resolve: (value: T) => void;
   reject: (reason: unknown) => void;
@@ -47,6 +53,16 @@ test('pIter() yields values in the order they fulfill', async (t) => {
 
   await iteration;
   t.deepEqual(yielded, expected);
+});
+
+test('pIter() accepts an iterable', async (t) => {
+  const expected = new Set(range(0, 100));
+  for await (const value of pIter(map(range(0, 100), async (n) => n))) {
+    t.true(expected.has(value));
+    t.true(expected.delete(value));
+  }
+
+  t.is(expected.size, 0);
 });
 
 test('pIter() rejects with the reason of the first promise to reject', async (t) => {
