@@ -65,16 +65,6 @@ function* map<T, U>(
   }
 }
 
-async function settling<T>(
-  promise: Promise<T>
-): Promise<PromiseSettledResult<T>> {
-  try {
-    return { status: 'fulfilled', value: await promise };
-  } catch (error: unknown) {
-    return { status: 'rejected', reason: error };
-  }
-}
-
 export function pIterSettled<T>(
   promises: Iterable<PromiseLike<T>>
 ): AsyncGenerator<
@@ -83,10 +73,13 @@ export function pIterSettled<T>(
   undefined
 > {
   return pIter(
-    map(promises, async (promise, index) => ({
-      index,
-      ...(await settling(Promise.resolve(promise))),
-    }))
+    map(promises, async (promise, index) => {
+      try {
+        return { status: 'fulfilled' as const, value: await promise, index };
+      } catch (error: unknown) {
+        return { status: 'rejected' as const, reason: error, index };
+      }
+    })
   );
 }
 
