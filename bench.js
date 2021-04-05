@@ -84,4 +84,32 @@ const consumers = [pIter, pIterEnumerated, pIterSettled, frstcmfrstsvd];
     cycle(),
     complete()
   );
+
+  function* generateResolved(count) {
+    let index = 0;
+    while (index < count) {
+      yield Promise.resolve(index++);
+    }
+  }
+
+  function addAwait(name, awaiter, source) {
+    return add(name, async () => {
+      await awaiter(source);
+    });
+  }
+
+  await suite(
+    'process a generator of 100 resolved promises',
+    ...[pIter, pIterSettled, pIterEnumerated].map((consumer) =>
+      consumeAll(consumer, generateResolved(100))
+    ),
+    addAwait('Promise.all()', Promise.all.bind(Promise), generateResolved(100)),
+    addAwait(
+      'Promise.allSettled()',
+      Promise.allSettled.bind(Promise),
+      generateResolved(100)
+    ),
+    cycle(),
+    complete()
+  );
 })();
