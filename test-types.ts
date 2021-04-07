@@ -15,7 +15,7 @@ async function* awaitedGenerator() {
 
 // Yields an async generator over the awaited types of the input
 expectTypeOf(pIter(promiseGenerator())).toEqualTypeOf<
-  AsyncGenerator<number | string, void, undefined>
+  AsyncGenerator<number | string, void, unknown>
 >();
 expectTypeOf(pIter(promiseGenerator())).toMatchTypeOf<
   AsyncGenerator<number | string>
@@ -33,13 +33,13 @@ expectTypeOf(pIter(promiseGenerator())).toEqualTypeOf(awaitedGenerator());
 // Handles different combinations of input types
 expectTypeOf(
   pIter([Promise.resolve(42), Promise.resolve('foo')])
-).toEqualTypeOf<AsyncGenerator<number | string, void, undefined>>();
+).toEqualTypeOf<AsyncGenerator<number | string, void, unknown>>();
 expectTypeOf(pIter([Promise.resolve(42), 42])).toEqualTypeOf<
-  AsyncGenerator<number, void, undefined>
+  AsyncGenerator<number, void, unknown>
 >();
 expectTypeOf(pIter([Promise.resolve(42), 'foo'])).toEqualTypeOf<
-  AsyncGenerator<number | string, void, undefined>
+  AsyncGenerator<number | string, void, unknown>
 >();
 expectTypeOf(pIter([Promise.resolve(42), Promise.resolve(42)])).toEqualTypeOf<
-  AsyncGenerator<number, void, undefined>
+  AsyncGenerator<number, void, unknown>
 >();

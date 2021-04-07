@@ -11,13 +11,13 @@ export type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
 
 export function pIter<T>(
   promises: Iterable<PromiseLike<T>>
-): AsyncGenerator<T, void, undefined>;
+): AsyncGenerator<T, void, unknown>;
 export function pIter<T>(
   promises: Iterable<T>
-): AsyncGenerator<Awaited<T>, void, undefined>;
+): AsyncGenerator<Awaited<T>, void, unknown>;
 export async function* pIter<T>(
   promises: Iterable<T | PromiseLike<T>>
-): AsyncGenerator<T, void, undefined> {
+): AsyncGenerator<T, void, unknown> {
   // Typescript incorrectly narrows `state` on the assumption that it doesn't
   // leak, so we manually widen it to its full type range.
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -78,7 +78,7 @@ export function pIterSettled<T>(
 ): AsyncGenerator<
   PromiseSettledResult<T> & { index: number },
   void,
-  undefined
+  unknown
 > {
   return pIter(
     map(promises, async (promise, index) => {
@@ -93,7 +93,7 @@ export function pIterSettled<T>(
 
 export function pIterEnumerated<T>(
   promises: Iterable<T | PromiseLike<T>>
-): AsyncGenerator<[number, T], void, undefined> {
+): AsyncGenerator<[number, T], void, unknown> {
   return pIter(
     map(
       promises,
