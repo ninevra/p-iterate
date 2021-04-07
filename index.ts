@@ -11,13 +11,13 @@ export type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
 
 export function pIter<T>(
   promises: Iterable<PromiseLike<T>>
-): AsyncGenerator<T, void, unknown>;
+): AsyncGenerator<T, void>;
 export function pIter<T>(
   promises: Iterable<T>
-): AsyncGenerator<Awaited<T>, void, unknown>;
+): AsyncGenerator<Awaited<T>, void>;
 export async function* pIter<T>(
   promises: Iterable<T | PromiseLike<T>>
-): AsyncGenerator<T, void, unknown> {
+): AsyncGenerator<T, void> {
   // Typescript incorrectly narrows `state` on the assumption that it doesn't
   // leak, so we manually widen it to its full type range.
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -74,12 +74,14 @@ function* map<T, U>(
 }
 
 export function pIterSettled<T>(
+  promises: Iterable<PromiseLike<T>>
+): AsyncGenerator<PromiseSettledResult<T> & { index: number }, void>;
+export function pIterSettled<T>(
+  promises: Iterable<T>
+): AsyncGenerator<PromiseSettledResult<Awaited<T>> & { index: number }, void>;
+export function pIterSettled<T>(
   promises: Iterable<T | PromiseLike<T>>
-): AsyncGenerator<
-  PromiseSettledResult<T> & { index: number },
-  void,
-  unknown
-> {
+): AsyncGenerator<PromiseSettledResult<T> & { index: number }, void> {
   return pIter(
     map(promises, async (promise, index) => {
       try {
@@ -92,8 +94,14 @@ export function pIterSettled<T>(
 }
 
 export function pIterEnumerated<T>(
+  promise: Iterable<PromiseLike<T>>
+): AsyncGenerator<[number, T], void>;
+export function pIterEnumerated<T>(
+  promises: Iterable<T>
+): AsyncGenerator<[number, Awaited<T>], void>;
+export function pIterEnumerated<T>(
   promises: Iterable<T | PromiseLike<T>>
-): AsyncGenerator<[number, T], void, unknown> {
+): AsyncGenerator<[number, T], void> {
   return pIter(
     map(
       promises,
