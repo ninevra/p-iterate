@@ -7,6 +7,14 @@ type State<T> =
     }
   | { label: 'rejected'; reason: unknown };
 
+export type Awaited<T> = T extends PromiseLike<infer U> ? Awaited<U> : T;
+
+export function pIter<T>(
+  promises: Iterable<PromiseLike<T>>
+): AsyncGenerator<T, void, undefined>;
+export function pIter<T>(
+  promises: Iterable<T>
+): AsyncGenerator<Awaited<T>, void, undefined>;
 export async function* pIter<T>(
   promises: Iterable<T | PromiseLike<T>>
 ): AsyncGenerator<T, void, undefined> {
