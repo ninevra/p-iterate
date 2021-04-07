@@ -46,6 +46,7 @@
     "ava": "avajs/ava#eef1a55584307533b6b82b17e8edde47b5eb9fb3",
     "benny": "^3.6.15",
     "c8": "^7.7.0",
+    "expect-type": "^0.11.0",
     "frstcmfrstsvd": "^1.0.7",
     "rollup": "^2.44.0",
     "rollup-plugin-sourcemaps": "^0.6.3",
