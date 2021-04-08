@@ -43,7 +43,7 @@
     "bench": "npm run test && node ./bench.js"
   },
   "devDependencies": {
-    "ava": "avajs/ava#eef1a55584307533b6b82b17e8edde47b5eb9fb3",
+    "ava": "^4.0.0-alpha.2",
     "benny": "^3.6.15",
     "c8": "^7.7.0",
     "expect-type": "^0.11.0",
