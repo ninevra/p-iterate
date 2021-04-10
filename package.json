@@ -9,6 +9,11 @@
   "description": "Iterate over promises as they're fulfilled.",
   "keywords": [
     "promise",
+    "fulfill",
+    "fulfilled",
+    "settle",
+    "settled",
+    "iterate",
     "async",
     "iterable",
     "async iterable",
