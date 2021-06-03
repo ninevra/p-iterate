@@ -1,17 +1,17 @@
-# p-iter
+# p-iterate
 
 Iterate over promises in the order they fulfill.
 
 ## Install
 
 ```sh
-npm install p-iter
+npm install p-iterate
 ```
 
 ## Usage
 
 ```javascript
-import { pIter } from 'p-iter';
+import { pIter } from 'p-iterate';
 
 const requests = [fetch('./a.json'), fetch('./b.json'), fetch('./c.json')];
 
@@ -21,7 +21,7 @@ for await (const response of pIter(requests)) {
 ```
 
 ```javascript
-const { pIter } = require('p-iter');
+const { pIter } = require('p-iterate');
 
 (async () => {
     const requests = [fetch('./a.json'), fetch('./b.json'), fetch('./c.json')];

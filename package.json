@@ -1,5 +1,5 @@
 {
-  "name": "p-iter",
+  "name": "p-iterate",
   "version": "0.0.0",
   "author": {
     "name": "ninevra",
@@ -18,12 +18,12 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ninevra/p-iter.git"
+    "url": "https://github.com/ninevra/p-iterate.git"
   },
   "bugs": {
-    "url": "https://github.com/ninevra/p-iter"
+    "url": "https://github.com/ninevra/p-iterate"
   },
-  "homepage": "https://github.com/ninevra/p-iter#readme",
+  "homepage": "https://github.com/ninevra/p-iterate#readme",
   "type": "module",
   "exports": {
     "import": "./dist/index.js",

@@ -1,5 +1,5 @@
 import { suite, add, cycle, complete } from 'benny';
-import { pIter, pIterEnumerated, pIterSettled } from 'p-iter';
+import { pIter, pIterEnumerated, pIterSettled } from 'p-iterate';
 import frstcmfrstsvd from 'frstcmfrstsvd';
 
 // Disclaimer: These benchmarks are largely irrelevant, since in the intended

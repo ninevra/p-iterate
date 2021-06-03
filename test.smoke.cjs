@@ -1,8 +1,8 @@
 const test = require('ava');
-const { pIter } = require('p-iter');
+const { pIter } = require('p-iterate');
 
 test('module structure', (t) => {
-  t.snapshot(require('p-iter'));
+  t.snapshot(require('p-iterate'));
 });
 
 test('pIter() runs', async (t) => {
